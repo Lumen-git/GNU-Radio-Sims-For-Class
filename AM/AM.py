@@ -13,6 +13,7 @@ from PyQt5 import Qt
 from gnuradio import qtgui
 from PyQt5 import QtCore
 from gnuradio import analog
+from gnuradio import audio
 from gnuradio import blocks
 from gnuradio import channels
 from gnuradio.filter import firdes
@@ -287,6 +288,7 @@ class AM(gr.top_block, Qt.QWidget):
         self.blocks_divide_xx_0 = blocks.divide_ff(1)
         self.blocks_add_const_vxx_0 = blocks.add_const_ff(1)
         self.blocks_abs_xx_0 = blocks.abs_ff(1)
+        self.audio_sink_0 = audio.sink(samp_rate, '', True)
         self.analog_sig_source_x_0_0_0 = analog.sig_source_c(5000000, analog.GR_COS_WAVE, (-1000000), 1, 0, 0)
         self.analog_sig_source_x_0_0 = analog.sig_source_c(5000000, analog.GR_COS_WAVE, (-1000000), 1, 0, 0)
         self.analog_sig_source_x_0 = analog.sig_source_c(5000000, analog.GR_COS_WAVE, 1000000, 1, 0, 0)
@@ -337,6 +339,7 @@ class AM(gr.top_block, Qt.QWidget):
         self.connect((self.low_pass_filter_0_0, 0), (self.analog_am_demod_cf_0_0, 0))
         self.connect((self.low_pass_filter_1, 0), (self.blocks_float_to_complex_0, 0))
         self.connect((self.rational_resampler_xxx_0, 0), (self.blocks_add_const_vxx_0, 0))
+        self.connect((self.rational_resampler_xxx_1_0, 0), (self.audio_sink_0, 0))
         self.connect((self.rational_resampler_xxx_1_0, 0), (self.blocks_sub_xx_0, 0))
         self.connect((self.rational_resampler_xxx_1_0, 0), (self.qtgui_time_sink_x_0, 0))
         self.connect((self.rational_resampler_xxx_1_0_0, 0), (self.blocks_multiply_xx_0, 0))

@@ -207,6 +207,23 @@ blocks:
     coordinate: [32, 756.0]
     rotation: 0
     state: enabled
+- name: audio_sink_0
+  id: audio_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    device_name: ''
+    num_inputs: '1'
+    ok_to_block: 'True'
+    samp_rate: samp_rate
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1128, 516.0]
+    rotation: 0
+    state: enabled
 - name: blocks_abs_xx_0
   id: blocks_abs_xx
   parameters:
@@ -1032,6 +1049,7 @@ connections:
 - [low_pass_filter_0_0, '0', analog_am_demod_cf_0_0, '0']
 - [low_pass_filter_1, '0', blocks_float_to_complex_0, '0']
 - [rational_resampler_xxx_0, '0', blocks_add_const_vxx_0, '0']
+- [rational_resampler_xxx_1_0, '0', audio_sink_0, '0']
 - [rational_resampler_xxx_1_0, '0', blocks_sub_xx_0, '0']
 - [rational_resampler_xxx_1_0, '0', qtgui_time_sink_x_0, '0']
 - [rational_resampler_xxx_1_0_0, '0', blocks_multiply_xx_0, '0']
