@@ -238,39 +238,6 @@ class AM(gr.top_block, Qt.QWidget):
 
         self._qtgui_time_sink_x_0_win = sip.wrapinstance(self.qtgui_time_sink_x_0.qwidget(), Qt.QWidget)
         self.top_layout.addWidget(self._qtgui_time_sink_x_0_win)
-        self.qtgui_number_sink_0 = qtgui.number_sink(
-            gr.sizeof_float,
-            0,
-            qtgui.NUM_GRAPH_NONE,
-            1,
-            None # parent
-        )
-        self.qtgui_number_sink_0.set_update_time(0.3)
-        self.qtgui_number_sink_0.set_title("")
-
-        labels = ['', '', '', '', '',
-            '', '', '', '', '']
-        units = ['', '', '', '', '',
-            '', '', '', '', '']
-        colors = [("black", "black"), ("black", "black"), ("black", "black"), ("black", "black"), ("black", "black"),
-            ("black", "black"), ("black", "black"), ("black", "black"), ("black", "black"), ("black", "black")]
-        factor = [1, 1, 1, 1, 1,
-            1, 1, 1, 1, 1]
-
-        for i in range(1):
-            self.qtgui_number_sink_0.set_min(i, -1)
-            self.qtgui_number_sink_0.set_max(i, 1)
-            self.qtgui_number_sink_0.set_color(i, colors[i][0], colors[i][1])
-            if len(labels[i]) == 0:
-                self.qtgui_number_sink_0.set_label(i, "Data {0}".format(i))
-            else:
-                self.qtgui_number_sink_0.set_label(i, labels[i])
-            self.qtgui_number_sink_0.set_unit(i, units[i])
-            self.qtgui_number_sink_0.set_factor(i, factor[i])
-
-        self.qtgui_number_sink_0.enable_autoscale(False)
-        self._qtgui_number_sink_0_win = sip.wrapinstance(self.qtgui_number_sink_0.qwidget(), Qt.QWidget)
-        self.top_layout.addWidget(self._qtgui_number_sink_0_win)
         self.low_pass_filter_1 = filter.interp_fir_filter_fff(
             1,
             firdes.low_pass(
@@ -314,7 +281,6 @@ class AM(gr.top_block, Qt.QWidget):
         self.blocks_multiply_xx_0 = blocks.multiply_vcc(1)
         self.blocks_multiply_const_vxx_0_0 = blocks.multiply_const_ff(7)
         self.blocks_multiply_const_vxx_0 = blocks.multiply_const_ff(7)
-        self.blocks_moving_average_xx_0 = blocks.moving_average_ff(1000, 1, 4000, 1)
         self.blocks_keep_one_in_n_0_0 = blocks.keep_one_in_n(gr.sizeof_gr_complex*1, 50)
         self.blocks_keep_one_in_n_0 = blocks.keep_one_in_n(gr.sizeof_gr_complex*1, 50)
         self.blocks_float_to_complex_0 = blocks.float_to_complex(1)
@@ -350,14 +316,12 @@ class AM(gr.top_block, Qt.QWidget):
         self.connect((self.analog_sig_source_x_0, 0), (self.blocks_multiply_xx_0, 1))
         self.connect((self.analog_sig_source_x_0_0, 0), (self.blocks_multiply_xx_1, 1))
         self.connect((self.analog_sig_source_x_0_0_0, 0), (self.blocks_multiply_xx_1_0, 1))
-        self.connect((self.blocks_abs_xx_0, 0), (self.blocks_moving_average_xx_0, 0))
         self.connect((self.blocks_abs_xx_0, 0), (self.qtgui_time_sink_x_1, 0))
         self.connect((self.blocks_add_const_vxx_0, 0), (self.blocks_divide_xx_0, 0))
         self.connect((self.blocks_divide_xx_0, 0), (self.low_pass_filter_1, 0))
         self.connect((self.blocks_float_to_complex_0, 0), (self.rational_resampler_xxx_1_0_0, 0))
         self.connect((self.blocks_keep_one_in_n_0, 0), (self.low_pass_filter_0, 0))
         self.connect((self.blocks_keep_one_in_n_0_0, 0), (self.low_pass_filter_0_0, 0))
-        self.connect((self.blocks_moving_average_xx_0, 0), (self.qtgui_number_sink_0, 0))
         self.connect((self.blocks_multiply_const_vxx_0, 0), (self.rational_resampler_xxx_1_0, 0))
         self.connect((self.blocks_multiply_const_vxx_0_0, 0), (self.rational_resampler_xxx_1_0_1, 0))
         self.connect((self.blocks_multiply_xx_0, 0), (self.blocks_multiply_xx_1_0, 0))
