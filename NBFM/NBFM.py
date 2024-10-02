@@ -159,10 +159,14 @@ class NBFM(gr.top_block, Qt.QWidget):
             noise_seed=0,
             block_tags=False)
         self.blocks_wavfile_source_0 = blocks.wavfile_source('/Users/aidanmoran/Desktop/test.wav', True)
+        self.blocks_multiply_xx_0_0 = blocks.multiply_vcc(1)
+        self.blocks_multiply_xx_0 = blocks.multiply_vcc(1)
         self.blocks_multiply_const_vxx_0 = blocks.multiply_const_ff(.7)
         self.blocks_divide_xx_0 = blocks.divide_ff(1)
         self.blocks_add_const_vxx_0 = blocks.add_const_ff(1)
         self.audio_sink_0 = audio.sink(48000, '', True)
+        self.analog_sig_source_x_0_0 = analog.sig_source_c(1000000, analog.GR_COS_WAVE, (-1000000), 1, 0, 0)
+        self.analog_sig_source_x_0 = analog.sig_source_c(1000000, analog.GR_COS_WAVE, 1000000, 1, 0, 0)
         self.analog_nbfm_tx_0 = analog.nbfm_tx(
         	audio_rate=samp_rate,
         	quad_rate=samp_rate,
@@ -184,13 +188,17 @@ class NBFM(gr.top_block, Qt.QWidget):
         ##################################################
         self.connect((self.analog_const_source_x_0, 0), (self.blocks_divide_xx_0, 1))
         self.connect((self.analog_nbfm_rx_0, 0), (self.rational_resampler_xxx_1_0, 0))
-        self.connect((self.analog_nbfm_tx_0, 0), (self.channels_channel_model_0, 0))
+        self.connect((self.analog_nbfm_tx_0, 0), (self.blocks_multiply_xx_0, 0))
+        self.connect((self.analog_sig_source_x_0, 0), (self.blocks_multiply_xx_0, 1))
+        self.connect((self.analog_sig_source_x_0_0, 0), (self.blocks_multiply_xx_0_0, 1))
         self.connect((self.blocks_add_const_vxx_0, 0), (self.blocks_divide_xx_0, 0))
         self.connect((self.blocks_divide_xx_0, 0), (self.low_pass_filter_1, 0))
         self.connect((self.blocks_multiply_const_vxx_0, 0), (self.audio_sink_0, 0))
         self.connect((self.blocks_multiply_const_vxx_0, 0), (self.qtgui_time_sink_x_0, 0))
+        self.connect((self.blocks_multiply_xx_0, 0), (self.channels_channel_model_0, 0))
+        self.connect((self.blocks_multiply_xx_0_0, 0), (self.low_pass_filter_0, 0))
         self.connect((self.blocks_wavfile_source_0, 0), (self.rational_resampler_xxx_0, 0))
-        self.connect((self.channels_channel_model_0, 0), (self.low_pass_filter_0, 0))
+        self.connect((self.channels_channel_model_0, 0), (self.blocks_multiply_xx_0_0, 0))
         self.connect((self.low_pass_filter_0, 0), (self.analog_nbfm_rx_0, 0))
         self.connect((self.low_pass_filter_1, 0), (self.analog_nbfm_tx_0, 0))
         self.connect((self.rational_resampler_xxx_0, 0), (self.blocks_add_const_vxx_0, 0))

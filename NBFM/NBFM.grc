@@ -119,7 +119,53 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [992, 200.0]
+    coordinate: [960, 200.0]
+    rotation: 0
+    state: enabled
+- name: analog_sig_source_x_0
+  id: analog_sig_source_x
+  parameters:
+    affinity: ''
+    alias: ''
+    amp: '1'
+    comment: ''
+    freq: '1000000'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    offset: '0'
+    phase: '0'
+    samp_rate: '1000000'
+    showports: 'False'
+    type: complex
+    waveform: analog.GR_COS_WAVE
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1032, 324.0]
+    rotation: 0
+    state: enabled
+- name: analog_sig_source_x_0_0
+  id: analog_sig_source_x
+  parameters:
+    affinity: ''
+    alias: ''
+    amp: '1'
+    comment: ''
+    freq: '-1000000'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    offset: '0'
+    phase: '0'
+    samp_rate: '1000000'
+    showports: 'False'
+    type: complex
+    waveform: analog.GR_COS_WAVE
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [104, 524.0]
     rotation: 0
     state: enabled
 - name: audio_sink_0
@@ -191,6 +237,42 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [880, 460.0]
+    rotation: 0
+    state: enabled
+- name: blocks_multiply_xx_0
+  id: blocks_multiply_xx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_inputs: '2'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1168, 220.0]
+    rotation: 0
+    state: enabled
+- name: blocks_multiply_xx_0_0
+  id: blocks_multiply_xx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_inputs: '2'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [248, 444.0]
     rotation: 0
     state: enabled
 - name: blocks_wavfile_source_0
@@ -427,7 +509,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1216, 220.0]
+    coordinate: [1264, 220.0]
     rotation: 0
     state: enabled
 - name: virtual_sink_2
@@ -473,11 +555,15 @@ blocks:
 connections:
 - [analog_const_source_x_0, '0', blocks_divide_xx_0, '1']
 - [analog_nbfm_rx_0, '0', rational_resampler_xxx_1_0, '0']
-- [analog_nbfm_tx_0, '0', virtual_sink_0, '0']
+- [analog_nbfm_tx_0, '0', blocks_multiply_xx_0, '0']
+- [analog_sig_source_x_0, '0', blocks_multiply_xx_0, '1']
+- [analog_sig_source_x_0_0, '0', blocks_multiply_xx_0_0, '1']
 - [blocks_add_const_vxx_0, '0', blocks_divide_xx_0, '0']
 - [blocks_divide_xx_0, '0', low_pass_filter_1, '0']
 - [blocks_multiply_const_vxx_0, '0', audio_sink_0, '0']
 - [blocks_multiply_const_vxx_0, '0', qtgui_time_sink_x_0, '0']
+- [blocks_multiply_xx_0, '0', virtual_sink_0, '0']
+- [blocks_multiply_xx_0_0, '0', low_pass_filter_0, '0']
 - [blocks_wavfile_source_0, '0', rational_resampler_xxx_0, '0']
 - [channels_channel_model_0, '0', virtual_sink_2, '0']
 - [low_pass_filter_0, '0', analog_nbfm_rx_0, '0']
@@ -485,7 +571,7 @@ connections:
 - [rational_resampler_xxx_0, '0', blocks_add_const_vxx_0, '0']
 - [rational_resampler_xxx_1_0, '0', blocks_multiply_const_vxx_0, '0']
 - [virtual_source_0, '0', channels_channel_model_0, '0']
-- [virtual_source_1, '0', low_pass_filter_0, '0']
+- [virtual_source_1, '0', blocks_multiply_xx_0_0, '0']
 
 metadata:
   file_format: 1
