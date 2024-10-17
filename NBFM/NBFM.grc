@@ -44,7 +44,7 @@ blocks:
     rangeType: float
     start: '0'
     step: '.001'
-    stop: '1'
+    stop: '10'
     value: '0'
     widget: counter_slider
   states:
@@ -239,6 +239,24 @@ blocks:
     coordinate: [880, 460.0]
     rotation: 0
     state: enabled
+- name: blocks_multiply_const_vxx_0_0
+  id: blocks_multiply_const_vxx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    const: '.7'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [160, 292.0]
+    rotation: 0
+    state: enabled
 - name: blocks_multiply_xx_0
   id: blocks_multiply_xx
   parameters:
@@ -311,7 +329,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [208, 300.0]
+    coordinate: [272, 300.0]
     rotation: 0
     state: enabled
 - name: low_pass_filter_0
@@ -522,7 +540,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [384, 324.0]
+    coordinate: [448, 324.0]
     rotation: 0
     state: enabled
 - name: virtual_source_0
@@ -562,6 +580,7 @@ connections:
 - [blocks_divide_xx_0, '0', low_pass_filter_1, '0']
 - [blocks_multiply_const_vxx_0, '0', audio_sink_0, '0']
 - [blocks_multiply_const_vxx_0, '0', qtgui_time_sink_x_0, '0']
+- [blocks_multiply_const_vxx_0_0, '0', channels_channel_model_0, '0']
 - [blocks_multiply_xx_0, '0', virtual_sink_0, '0']
 - [blocks_multiply_xx_0_0, '0', low_pass_filter_0, '0']
 - [blocks_wavfile_source_0, '0', rational_resampler_xxx_0, '0']
@@ -570,7 +589,7 @@ connections:
 - [low_pass_filter_1, '0', analog_nbfm_tx_0, '0']
 - [rational_resampler_xxx_0, '0', blocks_add_const_vxx_0, '0']
 - [rational_resampler_xxx_1_0, '0', blocks_multiply_const_vxx_0, '0']
-- [virtual_source_0, '0', channels_channel_model_0, '0']
+- [virtual_source_0, '0', blocks_multiply_const_vxx_0_0, '0']
 - [virtual_source_1, '0', blocks_multiply_xx_0_0, '0']
 
 metadata:

@@ -72,7 +72,7 @@ class NBFM(gr.top_block, Qt.QWidget):
         # Blocks
         ##################################################
 
-        self._noise_range = qtgui.Range(0, 1, .001, 0, 200)
+        self._noise_range = qtgui.Range(0, 10, .001, 0, 200)
         self._noise_win = qtgui.RangeWidget(self._noise_range, self.set_noise, "noise", "counter_slider", float, QtCore.Qt.Horizontal)
         self.top_layout.addWidget(self._noise_win)
         self.rational_resampler_xxx_1_0 = filter.rational_resampler_fff(
