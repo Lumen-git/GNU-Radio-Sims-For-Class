@@ -6,11 +6,11 @@
 #
 # GNU Radio Python Flow Graph
 # Title: Not titled yet
-# GNU Radio version: 3.10.7.0
+# GNU Radio version: 3.10.10.0
 
-from packaging.version import Version as StrictVersion
 from PyQt5 import Qt
 from gnuradio import qtgui
+from PyQt5 import QtCore
 from gnuradio import analog
 from gnuradio import blocks
 import numpy
@@ -25,8 +25,6 @@ from PyQt5 import Qt
 from argparse import ArgumentParser
 from gnuradio.eng_arg import eng_float, intx
 from gnuradio import eng_notation
-from gnuradio.qtgui import Range, RangeWidget
-from PyQt5 import QtCore
 import numpy as np; import math
 import sip
 
@@ -58,10 +56,9 @@ class QAM64(gr.top_block, Qt.QWidget):
         self.settings = Qt.QSettings("GNU Radio", "QAM64")
 
         try:
-            if StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
-                self.restoreGeometry(self.settings.value("geometry").toByteArray())
-            else:
-                self.restoreGeometry(self.settings.value("geometry"))
+            geometry = self.settings.value("geometry")
+            if geometry:
+                self.restoreGeometry(geometry)
         except BaseException as exc:
             print(f"Qt GUI: Could not restore geometry: {str(exc)}", file=sys.stderr)
 
@@ -70,21 +67,22 @@ class QAM64(gr.top_block, Qt.QWidget):
         ##################################################
         self.e_band = e_band = 1
         self.volt = volt = 0
-        self.samp_rate = samp_rate = 32000
+        self.samp_rate = samp_rate = 3000000
         self.samp_per_sym = samp_per_sym = 8
         self.excess_bw = excess_bw = e_band
         self.carrier_freq = carrier_freq = 1000000
         self.atten = atten = 1
+        self.alpha = alpha = .35
 
         ##################################################
         # Blocks
         ##################################################
 
-        self._volt_range = Range(0, 1, .01, 0, 200)
-        self._volt_win = RangeWidget(self._volt_range, self.set_volt, "Channel Voltage", "counter_slider", float, QtCore.Qt.Horizontal)
+        self._volt_range = qtgui.Range(0, 1, .01, 0, 200)
+        self._volt_win = qtgui.RangeWidget(self._volt_range, self.set_volt, "Channel Voltage", "counter_slider", float, QtCore.Qt.Horizontal)
         self.top_layout.addWidget(self._volt_win)
-        self._atten_range = Range(0, 1, .001, 1, 200)
-        self._atten_win = RangeWidget(self._atten_range, self.set_atten, "Attenuation", "counter_slider", float, QtCore.Qt.Horizontal)
+        self._atten_range = qtgui.Range(0, 1, .001, 1, 200)
+        self._atten_win = qtgui.RangeWidget(self._atten_range, self.set_atten, "Attenuation", "counter_slider", float, QtCore.Qt.Horizontal)
         self.top_layout.addWidget(self._atten_win)
         self.root_raised_cosine_filter_0_1 = filter.fir_filter_fff(
             1,
@@ -208,7 +206,7 @@ class QAM64(gr.top_block, Qt.QWidget):
         self._qtgui_const_sink_x_0_0_win = sip.wrapinstance(self.qtgui_const_sink_x_0_0.qwidget(), Qt.QWidget)
         self.top_layout.addWidget(self._qtgui_const_sink_x_0_0_win)
         self.qtgui_const_sink_x_0 = qtgui.const_sink_c(
-            100, #size
+            1000, #size
             "", #name
             1, #number of inputs
             None # parent
@@ -227,7 +225,7 @@ class QAM64(gr.top_block, Qt.QWidget):
         widths = [1, 1, 1, 1, 1,
             1, 1, 1, 1, 1]
         colors = ["blue", "red", "green", "black", "cyan",
-            "magenta", "yellow", "dark red", "dark green", "red"]
+            "magenta", "yellow", "dark red", "dark green", "dark blue"]
         styles = [0, 0, 0, 0, 0,
             0, 0, 0, 0, 0]
         markers = [0, 0, 0, 0, 0,
@@ -252,8 +250,8 @@ class QAM64(gr.top_block, Qt.QWidget):
         self.interp_fir_filter_xxx_0_0.declare_sample_delay(0)
         self.interp_fir_filter_xxx_0 = filter.interp_fir_filter_fff(samp_per_sym, (np.hstack((1,np.zeros(samp_per_sym-1)))))
         self.interp_fir_filter_xxx_0.declare_sample_delay(0)
-        self._e_band_range = Range(0, 2, .01, 1, 200)
-        self._e_band_win = RangeWidget(self._e_band_range, self.set_e_band, "Excess Bandwidth", "counter_slider", float, QtCore.Qt.Horizontal)
+        self._e_band_range = qtgui.Range(0, 2, .01, 1, 200)
+        self._e_band_win = qtgui.RangeWidget(self._e_band_range, self.set_e_band, "Excess Bandwidth", "counter_slider", float, QtCore.Qt.Horizontal)
         self.top_layout.addWidget(self._e_band_win)
         self.digital_map_bb_0_0 = digital.map_bb((1,2,3,4,-1,-2,-3,-4,1,2,3,4,-1,-2,-3,-4,1,2,3,4,-1,-2,-3,-4,1,2,3,4,-1,-2,-3,-4,1,2,3,4,-1,-2,-3,-4,1,2,3,4,-1,-2,-3,-4,1,2,3,4,-1,-2,-3,-4,1,2,3,4,-1,-2,-3,-4))
         self.digital_map_bb_0 = digital.map_bb((1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,4,4,4,4,4,4,4,4, -1,-1,-1,-1,-1,-1,-1,-1,-2,-2,-2,-2,-2,-2,-2,-2,-3,-3,-3,-3,-3,-3,-3,-3,-4,-4,-4,-4,-4,-4,-4,-4))
@@ -266,6 +264,7 @@ class QAM64(gr.top_block, Qt.QWidget):
         self.blocks_multiply_const_vxx_0 = blocks.multiply_const_cc(atten)
         self.blocks_keep_one_in_n_0_0 = blocks.keep_one_in_n(gr.sizeof_float*1, samp_per_sym)
         self.blocks_keep_one_in_n_0 = blocks.keep_one_in_n(gr.sizeof_float*1, samp_per_sym)
+        self.blocks_float_to_complex_1 = blocks.float_to_complex(1)
         self.blocks_float_to_complex_0_0 = blocks.float_to_complex(1)
         self.blocks_float_to_complex_0 = blocks.float_to_complex(1)
         self.blocks_complex_to_float_0 = blocks.complex_to_float(1)
@@ -274,8 +273,11 @@ class QAM64(gr.top_block, Qt.QWidget):
         self.blocks_add_xx_0 = blocks.add_vcc(1)
         self.analog_sig_source_x_0_1 = analog.sig_source_c(samp_rate, analog.GR_SIN_WAVE, (-carrier_freq), 1, 0, 0)
         self.analog_sig_source_x_0 = analog.sig_source_c(samp_rate, analog.GR_SIN_WAVE, carrier_freq, 1, 0, 0)
-        self.analog_random_source_x_0 = blocks.vector_source_b(list(map(int, numpy.random.randint(0, 256, 1000))), True)
+        self.analog_random_source_x_0 = blocks.vector_source_b(list(map(int, numpy.random.randint(0, 2, 1000))), True)
         self.analog_noise_source_x_0 = analog.noise_source_c(analog.GR_UNIFORM, volt, 0)
+        self._alpha_range = qtgui.Range(0, 1, .01, .35, 200)
+        self._alpha_win = qtgui.RangeWidget(self._alpha_range, self.set_alpha, "'alpha'", "counter_slider", float, QtCore.Qt.Horizontal)
+        self.top_layout.addWidget(self._alpha_win)
 
 
         ##################################################
@@ -292,12 +294,12 @@ class QAM64(gr.top_block, Qt.QWidget):
         self.connect((self.blocks_complex_to_float_0, 0), (self.root_raised_cosine_filter_0_1, 0))
         self.connect((self.blocks_float_to_complex_0, 0), (self.blocks_multiply_xx_0, 1))
         self.connect((self.blocks_float_to_complex_0_0, 0), (self.qtgui_const_sink_x_0, 0))
+        self.connect((self.blocks_float_to_complex_1, 0), (self.qtgui_const_sink_x_0_0, 0))
         self.connect((self.blocks_keep_one_in_n_0, 0), (self.blocks_float_to_complex_0_0, 0))
         self.connect((self.blocks_keep_one_in_n_0_0, 0), (self.blocks_float_to_complex_0_0, 1))
         self.connect((self.blocks_multiply_const_vxx_0, 0), (self.blocks_add_xx_0, 0))
         self.connect((self.blocks_multiply_xx_0, 0), (self.blocks_multiply_const_vxx_0, 0))
         self.connect((self.blocks_multiply_xx_0_1, 0), (self.blocks_complex_to_float_0, 0))
-        self.connect((self.blocks_multiply_xx_0_1, 0), (self.qtgui_const_sink_x_0_0, 0))
         self.connect((self.blocks_pack_k_bits_bb_0, 0), (self.digital_map_bb_0, 0))
         self.connect((self.blocks_pack_k_bits_bb_0, 0), (self.digital_map_bb_0_0, 0))
         self.connect((self.blocks_skiphead_0, 0), (self.blocks_keep_one_in_n_0, 0))
@@ -309,7 +311,9 @@ class QAM64(gr.top_block, Qt.QWidget):
         self.connect((self.interp_fir_filter_xxx_0_0, 0), (self.root_raised_cosine_filter_0_0, 0))
         self.connect((self.root_raised_cosine_filter_0, 0), (self.blocks_float_to_complex_0, 0))
         self.connect((self.root_raised_cosine_filter_0_0, 0), (self.blocks_float_to_complex_0, 1))
+        self.connect((self.root_raised_cosine_filter_0_0_0, 0), (self.blocks_float_to_complex_1, 1))
         self.connect((self.root_raised_cosine_filter_0_0_0, 0), (self.blocks_skiphead_0_0, 0))
+        self.connect((self.root_raised_cosine_filter_0_1, 0), (self.blocks_float_to_complex_1, 0))
         self.connect((self.root_raised_cosine_filter_0_1, 0), (self.blocks_skiphead_0, 0))
         self.connect((self.root_raised_cosine_filter_0_1, 0), (self.qtgui_eye_sink_x_0, 0))
 
@@ -390,14 +394,17 @@ class QAM64(gr.top_block, Qt.QWidget):
         self.atten = atten
         self.blocks_multiply_const_vxx_0.set_k(self.atten)
 
+    def get_alpha(self):
+        return self.alpha
+
+    def set_alpha(self, alpha):
+        self.alpha = alpha
+
 
 
 
 def main(top_block_cls=QAM64, options=None):
 
-    if StrictVersion("4.5.0") <= StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
-        style = gr.prefs().get_string('qtgui', 'style', 'raster')
-        Qt.QApplication.setGraphicsSystem(style)
     qapp = Qt.QApplication(sys.argv)
 
     tb = top_block_cls()
